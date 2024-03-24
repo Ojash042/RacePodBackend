@@ -8,7 +8,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 string? connectionString = builder.Configuration.GetConnectionString("connectionString") ?? throw new InvalidOperationException("Connection String 'connectionString' Not Found");
 builder.Services.AddScoped<FeedReader>();
-builder.Services.AddDbContext<ApplicationDbContext>(opions => opions.UseSqlite(connectionString));
+builder.Services.AddDbContext<ApplicationDbContext>(opions => {
+	opions.UseSqlite(connectionString);
+	opions.EnableDetailedErrors();
+	opions.EnableSensitiveDataLogging();
+});
 builder.WebHost.UseUrls("http://0.0.0.0.:5050");
 builder.Services.AddControllers();
 

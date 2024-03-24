@@ -10,9 +10,10 @@ public class PodcastSeries {
 	public string Author { get; set; } = null!;
 	[StringLength(256)]
 	public string Title { get; set; } = null!;
-	public DateTime PublishedDate { get; init; }
+	public DateTime PublishedDate { get; set; }
 	[StringLength(512)] 
 	public string Url { get; set; } = null!;
+	
 
 	[StringLength(32)]
 	public string? Language { get; set; }
@@ -28,4 +29,5 @@ public class PodcastSeries {
 	public string Image { get; set; }
 
 	public List<PodcastEpisode> Episodes { get; set; } = new List<PodcastEpisode>();
+	public String RssUrl{ get; set; } = null!;
 }

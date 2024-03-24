@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/ojash/Documents/Projects/RacePodBackend/RacePodBackend.csproj": {}
+    "/home/ojash/Projects/RacePod/RacePodBackend/RacePodBackend.csproj": {}
   },
   "projects": {
-    "/home/ojash/Documents/Projects/RacePodBackend/RacePodBackend.csproj": {
+    "/home/ojash/Projects/RacePod/RacePodBackend/RacePodBackend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/ojash/Documents/Projects/RacePodBackend/RacePodBackend.csproj",
+        "projectUniqueName": "/home/ojash/Projects/RacePod/RacePodBackend/RacePodBackend.csproj",
         "projectName": "RacePodBackend",
-        "projectPath": "/home/ojash/Documents/Projects/RacePodBackend/RacePodBackend.csproj",
+        "projectPath": "/home/ojash/Projects/RacePod/RacePodBackend/RacePodBackend.csproj",
         "packagesPath": "/home/ojash/.nuget/packages/",
-        "outputPath": "/home/ojash/Documents/Projects/RacePodBackend/obj/",
+        "outputPath": "/home/ojash/Projects/RacePod/RacePodBackend/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/ojash/.nuget/NuGet/NuGet.Config"
@@ -84,6 +84,12 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.3, 8.0.3]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -92,7 +98,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.103/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

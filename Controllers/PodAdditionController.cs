@@ -17,17 +17,20 @@ public class PodAdditionController(ILogger<PodAdditionController> logger, FeedRe
 	private readonly FeedReader _feedReader = feedReader;
 	
 	[HttpPost(Name = "AddPodcast")]
-	[ProducesResponseType<PodcastSeries>(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(statusCode:StatusCodes.Status500InternalServerError)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
-	public IActionResult PostPodAddition(String url) {
+	[Produces("application/json")]
+	public IActionResult Post([FromForm] String url) {
 		PodcastSeries val;
+		//String url = Request.Form["url"]!;
 		try {
 			if (!(url.StartsWith("https://") || url.StartsWith("http://"))) {
 				url = $"https://{url}";
 			}
 			//val = _feedReader.AddNewPodcastSeries(url);
+			//val =_feedReader.AddPodcast(url);
 			_feedReader.AddPodcast(url);
-			val = new PodcastSeries();
 		}
 		catch (InvalidRssException e) {
 			return BadRequest(e.Message);
@@ -35,6 +38,6 @@ public class PodAdditionController(ILogger<PodAdditionController> logger, FeedRe
 		catch (XmlException e) {
 			return BadRequest("The url you have provided is not a valid podcast url");
 		}
-		return Ok(val);
+		return Ok();
 	}
 }

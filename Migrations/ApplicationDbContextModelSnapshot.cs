@@ -120,6 +120,10 @@ namespace RacePodBackend.Migrations
                     b.Property<DateTime>("PublishedDate")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("RssUrl")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(256)
