@@ -7,12 +7,16 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 string? connectionString = builder.Configuration.GetConnectionString("connectionString") ?? throw new InvalidOperationException("Connection String 'connectionString' Not Found");
+
 builder.Services.AddScoped<FeedReader>();
+builder.Services.AddTransient<IDataServices, DataServices>();
+
 builder.Services.AddDbContext<ApplicationDbContext>(opions => {
 	opions.UseSqlite(connectionString);
 	opions.EnableDetailedErrors();
 	opions.EnableSensitiveDataLogging();
 });
+
 builder.WebHost.UseUrls("http://0.0.0.0.:5050");
 builder.Services.AddControllers();
 

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RacePodBackend")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e3446e1669cc1931c389c5ea0d8c54916d9f0bd8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c583fc5d3fe9dc4f29f825f63cf3e70ffa0b7e73")]
 [assembly: System.Reflection.AssemblyProductAttribute("RacePodBackend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RacePodBackend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
