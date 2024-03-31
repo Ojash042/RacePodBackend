@@ -6,5 +6,5 @@ namespace RacePodBackend.Services;
 public interface IDataServices{
     public List<PodcastSeries> GetAllSeries();
     public PodcastSeries InitialResults(Guid id);
-    public List<PodcastEpisode> GetRangeOfEpisodes(Guid id, int start,int range);
+    public List<PodcastEpisode> GetRangeOfEpisodes(Guid id, int page);
 }

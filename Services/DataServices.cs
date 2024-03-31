@@ -2,6 +2,7 @@ using System.Reflection.Metadata.Ecma335;
 using Microsoft.EntityFrameworkCore;
 using RacePodBackend.Model;
 using RacePodBackend.Data;
+using RacePodBackend.Errors;
 using RacePodBackend.ViewModels;
 
 namespace RacePodBackend.Services;
@@ -25,8 +26,18 @@ public class DataServices : IDataServices{
             return seriesItem;
     }
 
-    public List<PodcastEpisode> GetRangeOfEpisodes(Guid id, int start, int range=30){
-        return new List<PodcastEpisode>();
+    public List<PodcastEpisode> GetRangeOfEpisodes(Guid id, int page=1){
+        int noOfEpisodes = _dbContext.PodcastEpisodes.Count(ep => ep.PodcastSeriesId==id);
+        _logger.LogError($"{noOfEpisodes}");
+        int remaining = noOfEpisodes -  page * 30;
+        
+        if (remaining <= 0){
+            throw new ItemListFulfilledException("Episode List already iterated through");
+        }
+        int nextPageAmount = remaining >= 30 ? 30 : remaining;
+        return  _dbContext.PodcastEpisodes.Where(ep=> ep.PodcastSeriesId==id)
+            .OrderByDescending(ep=>ep.PublishedDate)
+            .Skip(30 * page).Take(nextPageAmount).ToList();
     }
 
     public List<PodcastSeries> GetAllSeries(){
