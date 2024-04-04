@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using RacePodBackend.Model;
 using RacePodBackend.Services;
-using System.Web;
 using RacePodBackend.Errors;
 
 namespace RacePodBackend.Controllers;
@@ -27,5 +25,4 @@ public class GetNextRangeController : ControllerBase{
             return BadRequest(e.Message);
         }
     }
-    
 }

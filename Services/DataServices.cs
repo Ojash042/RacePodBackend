@@ -25,7 +25,7 @@ public class DataServices : IDataServices{
                 .ToList();
             return seriesItem;
     }
-
+    
     public List<PodcastEpisode> GetRangeOfEpisodes(Guid id, int page=1){
         int noOfEpisodes = _dbContext.PodcastEpisodes.Count(ep => ep.PodcastSeriesId==id);
         _logger.LogError($"{noOfEpisodes}");

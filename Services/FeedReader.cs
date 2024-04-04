@@ -4,6 +4,7 @@ using System.Xml.Linq;
 using RacePodBackend.Data;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 using RacePodBackend.Model;
 
 namespace RacePodBackend.Services; 
@@ -23,24 +24,34 @@ public class FeedReader {
 
 	public void updateEpisodeRecords(Guid podcastSeriesID){
 		List<PodcastEpisode> episodesInDb = _applicationDbContext.PodcastEpisodes.Where(e => e.PodcastSeriesId == podcastSeriesID).ToList();
-		PodcastSeries podcastSeries = _applicationDbContext.PodcastSeries.First(series=>series.PodcastSeriesId == podcastSeriesID);
+		var podcastSeries = _applicationDbContext.PodcastSeries
+			.Where(series => series.PodcastSeriesId == podcastSeriesID)
+			.Select(series => new{
+				PodcastSeries = series,
+				Episode = series.Episodes.OrderByDescending(e => e.PublishedDate).First()
+			}).First();
+			
+		
 		using (var trans = _applicationDbContext.Database.BeginTransaction())
-		using (var reader = XmlReader.Create(podcastSeries.RssUrl)){
+		using (var reader = XmlReader.Create(podcastSeries.PodcastSeries.RssUrl)){
 			SyndicationFeed feed = SyndicationFeed.Load(reader);
 			var enumerator = feed.Items.GetEnumerator();
+			enumerator.MoveNext();
 
-			while(podcastSeries.PublishedDate < enumerator.Current?.PublishDate.UtcDateTime){
+			while (!podcastSeries.Episode.Title.Equals(enumerator.Current.Title.Text)){
 				List<PodcastEpisode> episodes = new();
 				PodcastEpisode episode = new();
 				var item = enumerator.Current;
 				episode.Title = item.Title.Text;
 				episode.PublishedDate = item.PublishDate.DateTime;
 				episode.EpisodeDescription = item.Summary.Text;
-				episode.PodcastSeries = podcastSeries;
+				episode.PodcastSeries = podcastSeries.PodcastSeries;
 				episode.PodcastSeriesId = podcastSeriesID;
 				episode.PodcastEpisodeId = Guid.NewGuid();
-    				
-				var imageNode = item.ElementExtensions.FirstOrDefault(e => e.OuterName.Equals("image")&& e.OuterNamespace == _nsItunes );
+
+				var imageNode =
+					item.ElementExtensions.FirstOrDefault(e =>
+						e.OuterName.Equals("image") && e.OuterNamespace == _nsItunes);
 				episode.ImageUrl = imageNode?.GetObject<XElement>().Attribute("href")?.Value;
 				var enclosure = item.Links.Where(x => x.RelationshipType == "enclosure").FirstOrDefault();
 				episode.AudioSource = enclosure?.Uri.OriginalString;
@@ -48,7 +59,8 @@ public class FeedReader {
 				_applicationDbContext.PodcastEpisodes.Add(episode);
 				enumerator.MoveNext();
 			}
-			podcastSeries.PublishedDate = feed.LastUpdatedTime.UtcDateTime;
+			podcastSeries.PodcastSeries.PublishedDate = feed.LastUpdatedTime.UtcDateTime;
+		;
 			_applicationDbContext.SaveChanges();
 			trans.Commit();
 			enumerator.Dispose();
@@ -169,9 +181,7 @@ public class FeedReader {
 			var categoryExists = categories.FirstOrDefault(category => category.CategoryName == categoryName);
 			Category category = categoryExists != null ? categoryExists : new Category() { CategoryId = Guid.NewGuid(), CategoryName = categoryName };
 			//category.PodcastSeries.Add(podcastSeries);
-			_logger.LogError($"Category Exits = {(categoryExists != null)} for {category.CategoryName}");
 			if (categoryExists == null){
-				_logger.LogError($"Category = {category.CategoryId}, {category.CategoryName}");
 				podcastSeries.Category.Add(category);
 				//_applicationDbContext.Categories.Add(category);
 			}
@@ -199,7 +209,6 @@ public class FeedReader {
 
 			episode.AudioType = item.Element("enclosure").Attribute("type").Value;
 			episode.AudioSource = item.Element("enclosure").Attribute("url").Value;
-			//_logger.LogCritical($"{item.Element("guid").Value}");
 			try {
 				episode.PodcastEpisodeId = (Guid.Parse(item.Element("guid").Value));
 			}
